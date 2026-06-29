@@ -1263,10 +1263,22 @@ function renderSettings() {
 
 // ─── MASTER RENDER ────────────────────────────────────────────
 function render() {
-  if (activeTab === 'week')     renderWeek();
-  if (activeTab === 'catalog')  renderCatalog();
-  if (activeTab === 'compare')  renderCompare();
-  if (activeTab === 'settings') renderSettings();
+  try {
+    if (activeTab === 'week')     renderWeek();
+    if (activeTab === 'catalog')  renderCatalog();
+    if (activeTab === 'compare')  renderCompare();
+    if (activeTab === 'settings') renderSettings();
+  } catch(e) {
+    console.error('Render error:', e);
+    const el = document.getElementById('page-' + activeTab);
+    if (el) el.innerHTML = `
+      <div class="empty">
+        <img src="caddoo-reflechit.jpeg" alt="Caddoo" class="empty-mascot">
+        <div class="empty-title">Caddoo a besoin d'un redémarrage</div>
+        <div class="empty-sub">Les données ont été mises à jour. Réinitialise pour repartir proprement.</div>
+        <button class="btn btn-danger btn-lg" onclick="hardReset()">🔄 Réinitialiser Caddoo</button>
+      </div>`;
+  }
 }
 
 // ─── ACTIONS: CHECKLIST ───────────────────────────────────────
@@ -1523,11 +1535,22 @@ function exportData() {
     .catch(() => toast('Export impossible'));
 }
 
+function hardReset() {
+  localStorage.clear();
+  location.reload();
+}
+
 function confirmReset() {
   showConfirm('⚠️ Effacer TOUTES les données ?\nCette action est irréversible.', () => {
-    ['household','products','checklist','feedbacks','settings'].forEach(k => localStorage.removeItem(k));
+    localStorage.clear();
     location.reload();
   });
+}
+
+// Si des produits existent déjà → marquer comme onboardé
+if (products.length > 0 && !onboarded) {
+  onboarded = true;
+  save('onboarded', true);
 }
 
 // ─── QTY OVERRIDE ────────────────────────────────────────────
