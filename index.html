@@ -419,6 +419,7 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
       </div>
       <div class="header-actions">
         <button class="hbtn" onclick="openAdd()" title="Ajouter un produit" aria-label="Ajouter">＋</button>
+        <button class="hbtn" onclick="hardReset()" title="Reset" aria-label="Reset" style="font-size:.7rem;background:var(--red-lt);color:var(--red)">↺</button>
       </div>
     </div>
   </header>
@@ -1547,11 +1548,20 @@ function confirmReset() {
   });
 }
 
-// Si des produits existent déjà → marquer comme onboardé
-if (products.length > 0 && !onboarded) {
-  onboarded = true;
-  save('onboarded', true);
-}
+// ─── MIGRATION / COMPAT CHECK ────────────────────────────────
+// Si les données sont corrompues ou d'une vieille version → reset propre
+(function() {
+  try {
+    const p = load('products', []);
+    const c = load('checklist', {});
+    // Test basique de cohérence
+    if (p.length > 0) JSON.stringify(p);
+    if (c.weekKey) JSON.stringify(c);
+  } catch(e) {
+    localStorage.clear();
+    location.reload();
+  }
+})();
 
 // ─── QTY OVERRIDE ────────────────────────────────────────────
 function changeQty(id, delta) {
