@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#22c55e">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -13,30 +13,33 @@
 <style>
 /* ─── DESIGN TOKENS ─────────────────────────────────────────── */
 :root {
-  /* Palette — vert Caddoo, blanc, gris naturel */
   --white:       #ffffff;
-  --bg:          #f2f7f4;       /* fond légèrement teinté vert */
+  --bg:          #eef7f0;       /* vert sauge pastel doux */
+  --bg2:         #f7fbf7;       /* encore plus clair */
   --surface:     #ffffff;
-  --surface2:    #f2f7f4;
-  --border:      #d4e8da;       /* séparateur vert très doux */
-  --ink:         #1a2e1e;       /* vert très foncé presque noir */
+  --surface2:    #eef7f0;
+  --border:      #cde8d4;
+  --ink:         #1a2e1e;
   --ink2:        #2d4a32;
-  --ink3:        #5a7a5f;       /* vert gris moyen */
-  --ink4:        #a0bba5;       /* vert gris clair */
-  --accent:      #22c55e;       /* vert Caddoo principal */
-  --accent-lt:   #dcfce7;       /* vert très clair */
-  --green:       #16a34a;       /* vert foncé pour succès */
+  --ink3:        #5a7a5f;
+  --ink4:        #a0bba5;
+  --accent:      #22c55e;
+  --accent-dk:   #16a34a;
+  --accent-lt:   #dcfce7;
+  --green:       #16a34a;
   --green-lt:    #dcfce7;
   --orange:      #f59e0b;
   --red:         #dc2626;
   --red-lt:      #fee2e2;
-  --purple:      #15803d;       /* vert foncé à la place du violet */
+  --purple:      #15803d;
   --purple-lt:   #dcfce7;
 
-  --r-sm:  10px;
-  --r-md:  14px;
-  --r-lg:  20px;
-  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.04);
+  --r-sm:  12px;
+  --r-md:  16px;
+  --r-lg:  22px;
+  --r-xl:  28px;
+  --shadow: 0 1px 4px rgba(0,0,0,.06), 0 4px 20px rgba(0,0,0,.05);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,.10);
 }
 
 /* ─── RESET ─────────────────────────────────────────────────── */
@@ -49,50 +52,66 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 
 /* ─── HEADER ─────────────────────────────────────────────────── */
 .header {
-  background: rgba(255,255,255,.95);
+  background: rgba(255,255,255,.97);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 2px solid var(--accent);
-  padding: 12px 20px 0;
+  border-bottom: 1.5px solid var(--border);
+  padding: calc(14px + env(safe-area-inset-top)) 20px 14px;
   position: sticky; top: 0; z-index: 100;
 }
-.header-top { display: flex; align-items: center; justify-content: space-between; padding-bottom: 12px; }
-.brand { font-size: 1.25rem; font-weight: 700; letter-spacing: -.03em; color: #14532d; }
+.header-top { display: flex; align-items: center; justify-content: space-between; }
+.brand { font-size: 1.7rem; font-weight: 800; letter-spacing: -.04em; color: #14532d; display: flex; align-items: center; gap: 10px; }
+.brand-logo { width: 64px; height: 64px; border-radius: 16px; object-fit: cover; }
 .brand span { color: var(--accent); }
-.header-actions { display: flex; gap: 6px; }
+.header-actions { display: flex; gap: 8px; }
 .hbtn {
-  width: 32px; height: 32px; border-radius: 50%; border: none;
+  width: 36px; height: 36px; border-radius: 50%; border: none;
   background: var(--accent-lt); color: #14532d;
   display: flex; align-items: center; justify-content: center;
-  cursor: pointer; font-size: .95rem; transition: background .15s;
+  cursor: pointer; font-size: 1rem; transition: background .15s;
 }
 .hbtn:active { background: var(--border); }
 
-/* ─── TABS ───────────────────────────────────────────────────── */
-.tabs { display: flex; gap: 0; }
-.tab {
-  flex: 1; border: none; background: none; padding: 10px 4px 11px;
-  font-size: .75rem; font-weight: 600; color: var(--ink4);
-  cursor: pointer; border-bottom: 2px solid transparent;
-  transition: color .15s, border-color .15s;
-  display: flex; align-items: center; justify-content: center; gap: 4px;
+/* ─── BOTTOM NAV ─────────────────────────────────────────────── */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 430px;
+  background: rgba(255,255,255,.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 200; display: flex;
 }
-.tab.active { color: var(--accent); border-color: var(--accent); }
-.badge {
+.nav-item {
+  flex: 1; border: none; background: none;
+  padding: 10px 4px 8px;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  cursor: pointer; color: var(--ink4);
+  font-size: .58rem; font-weight: 700; letter-spacing: .02em; text-transform: uppercase;
+  -webkit-tap-highlight-color: transparent;
+  position: relative; transition: color .15s;
+}
+.nav-item.active { color: var(--accent); }
+.nav-icon { font-size: 1.4rem; line-height: 1; transition: transform .15s; }
+.nav-item.active .nav-icon { transform: scale(1.15); }
+.nav-badge {
+  position: absolute; top: 6px; right: calc(50% - 20px);
   background: var(--accent); color: #fff;
-  font-size: .6rem; font-weight: 700; border-radius: 99px;
-  padding: 1px 5px; min-width: 16px; text-align: center; line-height: 1.4;
+  font-size: .5rem; font-weight: 800; border-radius: 99px;
+  padding: 1px 4px; min-width: 14px; text-align: center; line-height: 1.6;
+  display: none;
 }
 
 /* ─── PAGES ──────────────────────────────────────────────────── */
-.page { display: none; flex: 1; padding-bottom: 120px; }
+.page { display: none; flex: 1; padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
 .page.active { display: block; }
 
 /* ─── SECTION LABEL ──────────────────────────────────────────── */
 .sec-label {
-  font-size: .72rem; font-weight: 600; color: var(--ink3);
-  text-transform: uppercase; letter-spacing: .07em;
-  padding: 18px 20px 6px;
+  font-size: .68rem; font-weight: 800; color: var(--ink3);
+  text-transform: uppercase; letter-spacing: .09em;
+  padding: 20px 20px 8px;
 }
 
 /* ─── CARD GROUP (iOS style) ─────────────────────────────────── */
@@ -108,50 +127,65 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 /* ─── WEEK CARD ──────────────────────────────────────────────── */
 .week-card {
   margin: 16px 16px 4px;
-  background: #14532d;
-  border-radius: var(--r-lg);
-  padding: 20px;
+  background: linear-gradient(135deg, #14532d 0%, #166534 100%);
+  border-radius: var(--r-xl);
+  padding: 22px 20px;
   color: #fff;
   display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 4px 24px rgba(20,83,45,.25);
+  position: relative; overflow: hidden;
+}
+.week-card::before {
+  content: ''; position: absolute; top: -20px; right: -20px;
+  width: 120px; height: 120px; border-radius: 50%;
+  background: rgba(255,255,255,.05);
 }
 .wc-left {}
-.wc-eyebrow { font-size: .68rem; font-weight: 600; color: #86efac; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
-.wc-total { font-size: 2rem; font-weight: 700; letter-spacing: -.04em; line-height: 1; }
-.wc-sub { font-size: .75rem; color: rgba(255,255,255,.45); margin-top: 4px; }
+.wc-eyebrow { font-size: .65rem; font-weight: 700; color: #86efac; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+.wc-logo { width: 16px; height: 16px; border-radius: 4px; object-fit: cover; }
+.wc-total { font-size: 2.4rem; font-weight: 800; letter-spacing: -.05em; line-height: 1; }
+.wc-sub { font-size: .75rem; color: rgba(255,255,255,.5); margin-top: 6px; }
 .wc-right { text-align: right; }
-.wc-stat { font-size: .75rem; color: rgba(255,255,255,.5); line-height: 1.8; }
-.wc-stat strong { color: #fff; font-size: 1.1rem; font-weight: 700; display: block; line-height: 1.1; }
+.wc-stat { font-size: .72rem; color: rgba(255,255,255,.5); line-height: 1.9; }
+.wc-stat strong { color: #fff; font-size: 1.2rem; font-weight: 800; display: block; line-height: 1.1; }
 
 /* ─── CHECKLIST ITEM ─────────────────────────────────────────── */
 .ci-check-wrap {
-  width: 24px; height: 24px; border-radius: 50%;
-  border: 2px solid var(--border);
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 2.5px solid var(--border);
   display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; transition: all .18s; color: #fff; font-size: .7rem;
-  cursor: pointer;
+  flex-shrink: 0; transition: all .2s; color: #fff; font-size: .9rem;
+  cursor: pointer; background: #fff;
+  -webkit-tap-highlight-color: transparent;
 }
-.ci-check-wrap.done { background: var(--accent); border-color: var(--accent); }
+.ci-check-wrap.done {
+  background: var(--accent); border-color: var(--accent);
+  box-shadow: 0 2px 10px rgba(34,197,94,.4);
+}
 .ci-body { flex: 1; min-width: 0; }
-.ci-name { font-size: .9rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ci-meta { font-size: .72rem; color: var(--ink3); margin-top: 2px; }
-.ci-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex-shrink: 0; }
-.ci-price { font-size: .88rem; font-weight: 600; }
+.ci-name { font-size: 1.05rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; }
+.ci-meta { font-size: .72rem; color: var(--ink3); margin-top: 3px; }
+.ci-right { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; flex-shrink: 0; min-width: 80px; }
+.ci-price { font-size: .95rem; font-weight: 800; color: var(--ink); }
 .ci-promo { font-size: .67rem; font-weight: 700; color: var(--green); }
 .ci-encore-btn {
-  border: none; border-radius: 99px; padding: 3px 8px;
-  font-size: .67rem; font-weight: 600; cursor: pointer;
-  background: var(--bg); color: var(--ink3);
-  transition: background .15s;
-  white-space: nowrap;
+  border: 1.5px solid var(--accent); border-radius: 99px; padding: 5px 11px;
+  font-size: .7rem; font-weight: 700; cursor: pointer;
+  background: var(--accent-lt); color: var(--accent-dk);
+  transition: all .15s; white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
 }
-.ci-encore-btn:active { background: var(--border); }
-.card-row.checked { opacity: .4; }
+.ci-encore-btn:active { background: var(--accent); color: #fff; }
+.card-row { min-height: 72px; padding: 14px 16px; }
+.card-row.checked { background: var(--bg2); }
+.card-row.checked .ci-name { text-decoration: line-through; color: var(--ink4); font-weight: 500; }
+.card-row.checked .ci-price { color: var(--ink4); }
 
 /* ─── EMPTY STATE ────────────────────────────────────────────── */
-.empty { padding: 60px 32px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.empty-icon { font-size: 2.8rem; }
-.empty-title { font-size: 1rem; font-weight: 700; }
-.empty-sub { font-size: .83rem; color: var(--ink3); line-height: 1.55; }
+.empty { padding: 50px 32px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.empty-mascot { width: 140px; height: 140px; object-fit: contain; margin-bottom: 4px; mix-blend-mode: multiply; }
+.empty-title { font-size: 1.15rem; font-weight: 800; color: var(--ink); }
+.empty-sub { font-size: .85rem; color: var(--ink3); line-height: 1.6; max-width: 260px; }
 
 /* ─── BUTTONS ────────────────────────────────────────────────── */
 .btn {
@@ -169,22 +203,26 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 
 /* ─── BOTTOM ACTION BAR ──────────────────────────────────────── */
 .action-bar {
-  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  position: fixed; bottom: calc(58px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%);
   width: 100%; max-width: 430px;
-  background: rgba(255,255,255,.95);
+  background: rgba(255,255,255,.97);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid var(--border);
-  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
-  z-index: 200;
+  padding: 12px 16px;
+  z-index: 199;
 }
 .action-bar.hidden { display: none; }
 .action-bar-row { display: flex; gap: 10px; }
 
 /* ─── PRODUCT CATALOG ────────────────────────────────────────── */
-.prod-emoji { width: 40px; height: 40px; border-radius: var(--r-sm); background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+.prod-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; flex-shrink: 0;
+}
 .prod-body { flex: 1; min-width: 0; }
-.prod-name { font-size: .9rem; font-weight: 500; }
+.prod-name { font-size: .9rem; font-weight: 600; }
 .prod-sub { font-size: .72rem; color: var(--ink3); margin-top: 2px; }
 .prod-actions { display: flex; gap: 6px; align-items: center; }
 .chip {
@@ -292,12 +330,12 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 
 /* ─── TOAST ──────────────────────────────────────────────────── */
 .toast {
-  position: fixed; bottom: 96px; left: 50%; transform: translateX(-50%) translateY(8px);
-  background: var(--ink); color: #fff; padding: 9px 18px;
-  border-radius: 99px; font-size: .82rem; font-weight: 500;
+  position: fixed; bottom: calc(130px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%) translateY(8px);
+  background: var(--ink); color: #fff; padding: 10px 20px;
+  border-radius: 99px; font-size: .82rem; font-weight: 600;
   opacity: 0; pointer-events: none; z-index: 999;
   transition: opacity .2s, transform .2s;
-  white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,.18);
+  white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,.2);
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
@@ -345,6 +383,27 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 .detail-value { font-size: .88rem; font-weight: 500; text-align: right; }
 .qty-hint { font-size: .65rem; color: var(--orange); font-weight: 600; margin-top: 2px; }
 
+/* ─── ONBOARDING ─────────────────────────────────────────────── */
+.onboarding {
+  padding: 32px 24px 40px;
+  display: flex; flex-direction: column; align-items: center; gap: 0;
+}
+.onb-mascot { width: 120px; height: 120px; border-radius: 60px; object-fit: cover; margin-bottom: 20px; box-shadow: 0 6px 24px rgba(0,0,0,.12); }
+.onb-title { font-size: 1.6rem; font-weight: 900; color: var(--ink); text-align: center; letter-spacing: -.03em; margin-bottom: 8px; line-height: 1.2; }
+.onb-sub { font-size: .9rem; color: var(--ink3); text-align: center; line-height: 1.6; margin-bottom: 28px; max-width: 280px; }
+.onb-section { font-size: .72rem; font-weight: 800; color: var(--ink3); text-transform: uppercase; letter-spacing: .08em; align-self: flex-start; margin-bottom: 10px; margin-top: 4px; }
+.onb-cards { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-bottom: 28px; }
+.onb-card {
+  background: var(--surface); border-radius: var(--r-md);
+  padding: 16px; border: 2px solid var(--border);
+  cursor: pointer; transition: all .18s;
+  display: flex; align-items: center; gap: 14px;
+}
+.onb-card:active, .onb-card.sel { border-color: var(--accent); background: var(--accent-lt); }
+.onb-card-icon { font-size: 1.8rem; }
+.onb-card-body {}
+.onb-card-title { font-size: .95rem; font-weight: 700; color: var(--ink); }
+.onb-card-sub { font-size: .78rem; color: var(--ink3); margin-top: 2px; }
 ::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 </style>
@@ -355,18 +414,13 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
   <!-- HEADER -->
   <header class="header">
     <div class="header-top">
-      <div class="brand">🐘 Cadd<span>oo</span></div>
+      <div class="brand">
+        <img src="caddoo-logo.jpeg" alt="" class="brand-logo" onerror="this.style.display='none'"><span>Cadd<em style="font-style:normal;color:var(--accent)">oo</em></span>
+      </div>
       <div class="header-actions">
         <button class="hbtn" onclick="openAdd()" title="Ajouter un produit" aria-label="Ajouter">＋</button>
-        <button class="hbtn" onclick="switchTab('settings')" title="Paramètres" aria-label="Paramètres">⚙</button>
       </div>
     </div>
-    <nav class="tabs">
-      <button class="tab active" id="tab-week" onclick="switchTab('week')">🛒 Semaine <span class="badge" id="badge-week">0</span></button>
-      <button class="tab" id="tab-catalog" onclick="switchTab('catalog')">📦 Produits</button>
-      <button class="tab" id="tab-compare" onclick="switchTab('compare')">💶 Prix</button>
-      <button class="tab" id="tab-settings" onclick="switchTab('settings')">⚙ Config</button>
-    </nav>
   </header>
 
   <!-- PAGE: WEEK -->
@@ -390,6 +444,27 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
   </div>
 
 </div><!-- #app -->
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-item active" id="tab-week" onclick="switchTab('week')">
+    <span class="nav-icon">🛒</span>
+    <span class="nav-badge" id="badge-week">0</span>
+    Semaine
+  </button>
+  <button class="nav-item" id="tab-catalog" onclick="switchTab('catalog')">
+    <span class="nav-icon">📦</span>
+    Produits
+  </button>
+  <button class="nav-item" id="tab-compare" onclick="switchTab('compare')">
+    <span class="nav-icon">💶</span>
+    Prix
+  </button>
+  <button class="nav-item" id="tab-settings" onclick="switchTab('settings')">
+    <span class="nav-icon">⚙️</span>
+    Config
+  </button>
+</nav>
 
 <!-- ADD SHEET -->
 <div class="sheet-overlay" id="sheet-add" onclick="closeSheet('sheet-add')">
@@ -483,27 +558,100 @@ const FREQS = [
 
 const ALL_TAGS = ['apéro', 'raclette', 'barbecue', 'petit-déj', 'bébé', 'animaux'];
 
-const EMOJI_MAP = {
-  'yaourt': '🥛', 'lait': '🥛', 'beurre': '🧈', 'fromage': '🧀',
-  'oeuf': '🥚', 'oeufs': '🥚', 'pain': '🍞', 'farine': '🌾',
-  'riz': '🍚', 'pâtes': '🍝', 'pasta': '🍝', 'spaghetti': '🍝',
-  'tomate': '🍅', 'tomates': '🍅', 'salade': '🥗', 'carotte': '🥕',
-  'banane': '🍌', 'pomme': '🍎', 'pommes': '🍎', 'fruit': '🍇',
-  'poulet': '🍗', 'viande': '🥩', 'poisson': '🐟', 'saumon': '🐟',
-  'café': '☕', 'thé': '🍵', 'eau': '💧', 'jus': '🍊',
-  'vin': '🍷', 'bière': '🍺', 'coca': '🥤', 'soda': '🥤',
-  'chocolat': '🍫', 'biscuit': '🍪', 'chips': '🍟', 'gâteau': '🎂',
-  'savon': '🧼', 'shampooing': '🧴', 'dentifrice': '🦷',
-  'papier': '🧻', 'lessive': '🧺', 'éponge': '🧽', 'gel': '🧴',
-  'huile': '🫙', 'sel': '🧂', 'sucre': '🍬', 'ketchup': '🥫',
-  'sauce': '🫙', 'cacahuète': '🥜', 'olive': '🫒',
-  'croquette': '🐾', 'chien': '🐾', 'chat': '🐱',
-};
+// ─── CATÉGORIES & ICÔNES ─────────────────────────────────────
+const CATEGORIES = [
+  // Laitier — sous-catégories distinctes
+  { keys: ['lait'], emoji:'🥛', bg:'#dbeafe' },
+  { keys: ['yaourt','yogourt'], emoji:'🍶', bg:'#dbeafe' },
+  { keys: ['beurre'], emoji:'🧈', bg:'#fef9c3' },
+  { keys: ['fromage','cheddar','gouda','emmental','camembert','brie','mozzarella','parmesan','gruyère'], emoji:'🧀', bg:'#fef3c7' },
+  { keys: ['crème','mascarpone','ricotta'], emoji:'🫙', bg:'#dbeafe' },
+  { keys: ['oeuf','oeufs'], emoji:'🥚', bg:'#fef9c3' },
+  // Boulangerie
+  { keys: ['pain','baguette','brioche'], emoji:'🍞', bg:'#fef3c7' },
+  { keys: ['biscuit','cookie','gâteau','cake','tarte','viennoiserie','croissant','madeleine'], emoji:'🍪', bg:'#fef3c7' },
+  { keys: ['farine','levure'], emoji:'🌾', bg:'#fef9c3' },
+  // Viande & Poisson
+  { keys: ['poulet','dinde','volaille'], emoji:'🍗', bg:'#fee2e2' },
+  { keys: ['saumon','thon','cabillaud','sole','dorade'], emoji:'🐟', bg:'#e0f2fe' },
+  { keys: ['crevette','moule','fruits de mer'], emoji:'🦐', bg:'#e0f2fe' },
+  { keys: ['viande','boeuf','steak','hachée','hachis'], emoji:'🥩', bg:'#fee2e2' },
+  { keys: ['porc','côte','rôti'], emoji:'🥓', bg:'#fee2e2' },
+  { keys: ['jambon','charcuterie','lardons','bacon','saucisse','merguez'], emoji:'🍖', bg:'#fee2e2' },
+  // Légumes
+  { keys: ['tomate'], emoji:'🍅', bg:'#fee2e2' },
+  { keys: ['salade','épinard','roquette'], emoji:'🥗', bg:'#dcfce7' },
+  { keys: ['carotte'], emoji:'🥕', bg:'#ffedd5' },
+  { keys: ['pomme de terre','patate'], emoji:'🥔', bg:'#fef3c7' },
+  { keys: ['oignon','échalote','ail'], emoji:'🧅', bg:'#fef9c3' },
+  { keys: ['champignon'], emoji:'🍄', bg:'#f1f5f9' },
+  { keys: ['avocat'], emoji:'🥑', bg:'#dcfce7' },
+  { keys: ['brocoli','courgette','poivron','haricot','concombre','céleri','poireau','navet','radis','betterave','légume'], emoji:'🥦', bg:'#dcfce7' },
+  // Fruits
+  { keys: ['banane'], emoji:'🍌', bg:'#fef9c3' },
+  { keys: ['pomme','poire'], emoji:'🍎', bg:'#fee2e2' },
+  { keys: ['orange','mandarine','citron'], emoji:'🍊', bg:'#ffedd5' },
+  { keys: ['fraise','framboise','myrtille','cerise'], emoji:'🍓', bg:'#fce7f3' },
+  { keys: ['raisin'], emoji:'🍇', bg:'#ede9fe' },
+  { keys: ['mangue','ananas','kiwi','pêche','abricot','melon','pastèque','fruit'], emoji:'🍑', bg:'#fce7f3' },
+  // Boissons
+  { keys: ['café'], emoji:'☕', bg:'#e8d5b7' },
+  { keys: ['thé','infusion','tisane'], emoji:'🍵', bg:'#dcfce7' },
+  { keys: ['eau','eau minérale'], emoji:'💧', bg:'#dbeafe' },
+  { keys: ['jus'], emoji:'🍊', bg:'#ffedd5' },
+  { keys: ['coca','soda','limonade'], emoji:'🥤', bg:'#fce7f3' },
+  { keys: ['bière'], emoji:'🍺', bg:'#fef9c3' },
+  { keys: ['vin'], emoji:'🍷', bg:'#fee2e2' },
+  { keys: ['champagne','prosecco'], emoji:'🥂', bg:'#fef9c3' },
+  // Épicerie sèche
+  { keys: ['pâtes','spaghetti','tagliatelle','fusilli','pasta'], emoji:'🍝', bg:'#fef9c3' },
+  { keys: ['riz'], emoji:'🍚', bg:'#f1f5f9' },
+  { keys: ['quinoa','lentille','pois','fécule','semoule'], emoji:'🫘', bg:'#fef3c7' },
+  { keys: ['huile'], emoji:'🫒', bg:'#dcfce7' },
+  { keys: ['vinaigre'], emoji:'🫙', bg:'#f1f5f9' },
+  { keys: ['sel'], emoji:'🧂', bg:'#f1f5f9' },
+  { keys: ['sucre'], emoji:'🍬', bg:'#fce7f3' },
+  { keys: ['chocolat','nutella','pâte à tartiner'], emoji:'🍫', bg:'#fce7f3' },
+  { keys: ['confiture','miel'], emoji:'🍯', bg:'#fef9c3' },
+  { keys: ['ketchup','mayonnaise','moutarde'], emoji:'🥫', bg:'#fee2e2' },
+  { keys: ['sauce','bouillon'], emoji:'🫙', bg:'#ffedd5' },
+  { keys: ['chips'], emoji:'🍟', bg:'#fef3c7' },
+  { keys: ['cacahuète','noix','amande','noisette'], emoji:'🥜', bg:'#fef3c7' },
+  { keys: ['olive'], emoji:'🫒', bg:'#dcfce7' },
+  // Hygiène
+  { keys: ['shampooing','après-shampooing'], emoji:'🧴', bg:'#ede9fe' },
+  { keys: ['savon','gel douche'], emoji:'🧼', bg:'#dbeafe' },
+  { keys: ['dentifrice','brosse à dents'], emoji:'🦷', bg:'#dbeafe' },
+  { keys: ['déodorant'], emoji:'🌸', bg:'#fce7f3' },
+  { keys: ['rasoir','lame'], emoji:'🪒', bg:'#f1f5f9' },
+  { keys: ['coton','lingette'], emoji:'🧻', bg:'#f3e8ff' },
+  { keys: ['crème','lotion','sérum'], emoji:'🧴', bg:'#fce7f3' },
+  // Maison
+  { keys: ['papier wc','papier toilette','essuie-tout','serviette'], emoji:'🧻', bg:'#f1f5f9' },
+  { keys: ['couche'], emoji:'👶', bg:'#dbeafe' },
+  { keys: ['lessive'], emoji:'🧺', bg:'#ecfdf5' },
+  { keys: ['liquide vaisselle','lave-vaisselle'], emoji:'🫧', bg:'#dbeafe' },
+  { keys: ['éponge'], emoji:'🧽', bg:'#dcfce7' },
+  { keys: ['sac poubelle','poubelle'], emoji:'🗑', bg:'#f1f5f9' },
+  { keys: ['nettoyant','désinfectant','javel'], emoji:'🧴', bg:'#ecfdf5' },
+  // Animaux
+  { keys: ['croquette','pâtée','nourriture chat','nourriture chien'], emoji:'🐾', bg:'#fef3c7' },
+  { keys: ['litière'], emoji:'🐱', bg:'#f1f5f9' },
+];
 
-function emoji(name) {
+function getCategory(name) {
   const l = name.toLowerCase();
-  for (const [k,v] of Object.entries(EMOJI_MAP)) if (l.includes(k)) return v;
-  return '🛒';
+  for (const cat of CATEGORIES) {
+    if (cat.keys.some(k => l.includes(k))) return cat;
+  }
+  return { emoji: '🛒', bg: '#f1f5f9' };
+}
+
+function emoji(name) { return getCategory(name).emoji; }
+
+function productIcon(name, size = 44) {
+  const cat = getCategory(name);
+  return `<div class="prod-icon" style="background:${cat.bg};width:${size}px;height:${size}px;border-radius:${size * 0.27}px;font-size:${size * 0.42}px">${cat.emoji}</div>`;
 }
 
 // ─── STORAGE ─────────────────────────────────────────────────
@@ -585,8 +733,87 @@ function simPrice(name) {
   return { colruyt, delhaize, promo, promoP };
 }
 
-// ─── ACTIVE TAB ───────────────────────────────────────────────
-let activeTab = 'week';
+// ─── ONBOARDING ───────────────────────────────────────────────
+const STARTER_LISTS = {
+  famille: [
+    { name:'Lait demi-écrémé', brand:'', qty:4, freqDays:7 },
+    { name:'Oeufs fermiers', brand:'', qty:12, freqDays:7 },
+    { name:'Pain de mie', brand:'', qty:1, freqDays:7 },
+    { name:'Yaourts nature', brand:'', qty:8, freqDays:7 },
+    { name:'Beurre doux', brand:'', qty:1, freqDays:14 },
+    { name:'Fromage tranches', brand:'', qty:1, freqDays:7 },
+    { name:'Poulet entier', brand:'', qty:1, freqDays:7 },
+    { name:'Pâtes spaghetti', brand:'', qty:2, freqDays:14 },
+    { name:'Riz', brand:'', qty:1, freqDays:21 },
+    { name:'Tomates', brand:'', qty:6, freqDays:7 },
+    { name:'Carottes', brand:'', qty:1, freqDays:7 },
+    { name:'Bananes', brand:'', qty:1, freqDays:7 },
+    { name:'Pommes', brand:'', qty:6, freqDays:7 },
+    { name:'Jus d\'orange', brand:'', qty:2, freqDays:7 },
+    { name:'Eau minérale', brand:'', qty:6, freqDays:7 },
+    { name:'Papier WC', brand:'', qty:1, freqDays:21 },
+    { name:'Lessive', brand:'', qty:1, freqDays:30 },
+    { name:'Liquide vaisselle', brand:'', qty:1, freqDays:30 },
+  ],
+  couple: [
+    { name:'Lait demi-écrémé', brand:'', qty:2, freqDays:7 },
+    { name:'Oeufs fermiers', brand:'', qty:6, freqDays:7 },
+    { name:'Pain de mie', brand:'', qty:1, freqDays:7 },
+    { name:'Beurre doux', brand:'', qty:1, freqDays:21 },
+    { name:'Fromage', brand:'', qty:1, freqDays:14 },
+    { name:'Poulet filets', brand:'', qty:1, freqDays:7 },
+    { name:'Pâtes', brand:'', qty:1, freqDays:14 },
+    { name:'Riz', brand:'', qty:1, freqDays:30 },
+    { name:'Salade', brand:'', qty:1, freqDays:7 },
+    { name:'Tomates', brand:'', qty:4, freqDays:7 },
+    { name:'Pommes', brand:'', qty:4, freqDays:7 },
+    { name:'Café moulu', brand:'', qty:1, freqDays:14 },
+    { name:'Eau minérale', brand:'', qty:6, freqDays:14 },
+    { name:'Papier WC', brand:'', qty:1, freqDays:30 },
+    { name:'Lessive', brand:'', qty:1, freqDays:30 },
+  ],
+  solo: [
+    { name:'Lait demi-écrémé', brand:'', qty:1, freqDays:7 },
+    { name:'Oeufs fermiers', brand:'', qty:6, freqDays:14 },
+    { name:'Pain', brand:'', qty:1, freqDays:7 },
+    { name:'Beurre doux', brand:'', qty:1, freqDays:30 },
+    { name:'Yaourts', brand:'', qty:4, freqDays:7 },
+    { name:'Poulet filet', brand:'', qty:1, freqDays:7 },
+    { name:'Pâtes', brand:'', qty:1, freqDays:14 },
+    { name:'Salade', brand:'', qty:1, freqDays:7 },
+    { name:'Pommes', brand:'', qty:3, freqDays:7 },
+    { name:'Café', brand:'', qty:1, freqDays:14 },
+    { name:'Eau minérale', brand:'', qty:6, freqDays:21 },
+    { name:'Papier WC', brand:'', qty:1, freqDays:30 },
+  ]
+};
+
+function loadStarterList(type) {
+  const list = STARTER_LISTS[type];
+  if (!list) return;
+  const now = Date.now();
+  const newProducts = list.map((d, i) => ({
+    id: (now + i).toString(),
+    householdId: household.id,
+    name: d.name, brand: d.brand, qty: d.qty,
+    type: 'regular', freqDays: d.freqDays,
+    tags: [], lastBought: null,
+    addedAt: now - i * 100,
+    feedbacks: [],
+  }));
+  products = newProducts;
+  save('products', products);
+  save('onboarded', true);
+  toast('🐘 Caddoo a préparé ta liste de départ !');
+  render();
+}
+
+function skipOnboarding() {
+  save('onboarded', true);
+  render();
+}
+
+let onboarded = load('onboarded', false);
 
 function switchTab(tab) {
   activeTab = tab;
@@ -606,11 +833,45 @@ function renderWeek() {
   const pending = items.filter(i => !checklist.checked[i.id]);
   const done    = items.filter(i =>  checklist.checked[i.id]);
 
-  document.getElementById('badge-week').textContent = pending.length;
+  const badgeEl = document.getElementById('badge-week');
+  if (badgeEl) { badgeEl.textContent = pending.length; badgeEl.style.display = pending.length > 0 ? '' : 'none'; }
 
-  if (products.filter(p => p.type === 'regular').length === 0) {
+  if (!onboarded && products.length === 0) {
+    el.innerHTML = `
+      <div class="onboarding">
+        <img src="caddoo-heureux.jpeg" alt="Caddoo" class="onb-mascot">
+        <div class="onb-title">Bonjour, je suis Caddoo !</div>
+        <div class="onb-sub">Je vais préparer ta liste de courses chaque semaine automatiquement. Dis-moi d'abord comment est ton foyer.</div>
+        <div class="onb-section">Choisir mon profil</div>
+        <div class="onb-cards">
+          <div class="onb-card" onclick="loadStarterList('famille')">
+            <div class="onb-card-icon">👨‍👩‍👧‍👦</div>
+            <div class="onb-card-body">
+              <div class="onb-card-title">Famille</div>
+              <div class="onb-card-sub">2 adultes + enfants · 18 produits de base</div>
+            </div>
+          </div>
+          <div class="onb-card" onclick="loadStarterList('couple')">
+            <div class="onb-card-icon">👫</div>
+            <div class="onb-card-body">
+              <div class="onb-card-title">Couple</div>
+              <div class="onb-card-sub">2 adultes · 15 produits de base</div>
+            </div>
+          </div>
+          <div class="onb-card" onclick="loadStarterList('solo')">
+            <div class="onb-card-icon">🧑</div>
+            <div class="onb-card-body">
+              <div class="onb-card-title">Solo</div>
+              <div class="onb-card-sub">1 personne · 12 produits de base</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-secondary" onclick="skipOnboarding()" style="width:100%">Je préfère tout configurer moi-même</button>
+      </div>`;
+    return;
+  }
     el.innerHTML = `<div class="empty">
-      <div class="empty-icon">🐘</div>
+      <img src="caddoo-heureux.jpeg" alt="Caddoo" class="empty-mascot">
       <div class="empty-title">Bonjour, je suis Caddoo !</div>
       <div class="empty-sub">Dis-moi ce que ton foyer aime acheter et je n'oublierai jamais. Je préparerai ta liste chaque semaine automatiquement.</div>
       <button class="btn btn-primary btn-lg" onclick="openAdd()">+ Ajouter mon premier produit</button>
@@ -620,7 +881,7 @@ function renderWeek() {
 
   if (items.length === 0) {
     el.innerHTML = `<div class="empty">
-      <div class="empty-icon">🐘</div>
+      <img src="caddoo-celebre.jpeg" alt="Caddoo" class="empty-mascot">
       <div class="empty-title">Caddoo a tout géré cette semaine !</div>
       <div class="empty-sub">Profite bien de tes courses. Caddoo se souvient de tout et sera prêt la semaine prochaine 🎉</div>
     </div>`;
@@ -638,7 +899,7 @@ function renderWeek() {
   let html = `
     <div class="week-card">
       <div class="wc-left">
-        <div class="wc-eyebrow">🐘 Caddoo a préparé · ${defaultStoreName()}</div>
+        <div class="wc-eyebrow"><img src="caddoo-logo.jpeg" class="wc-logo" alt=""> Caddoo a préparé · ${defaultStoreName()}</div>
         <div class="wc-total">${totalEst.toFixed(2)} €</div>
         <div class="wc-sub">${today}</div>
       </div>
@@ -720,6 +981,7 @@ function checkRow(p, isDone) {
       <div class="ci-check-wrap ${isDone ? 'done' : ''}" onclick="event.stopPropagation(); toggleCheck('${p.id}')">
         ${isDone ? '✓' : ''}
       </div>
+      ${productIcon(p.name, 40)}
       <div class="ci-body" onclick="openDetail('${p.id}')" style="cursor:pointer">
         <div class="ci-name">${qty > 1 ? qty + '× ' : ''}${p.name}${p.format ? ' · ' + p.format : ''}${isManual ? ' <span style="font-size:.65rem;color:var(--accent);font-weight:700">+ajouté</span>' : ''}</div>
         <div class="ci-meta">
@@ -748,7 +1010,7 @@ function renderCatalog() {
   const el = document.getElementById('page-catalog');
   if (products.length === 0) {
     el.innerHTML = `<div class="empty">
-      <div class="empty-icon">🐘</div>
+      <img src="caddoo-clinoeil.jpeg" alt="Caddoo" class="empty-mascot">
       <div class="empty-title">La mémoire de Caddoo est vide</div>
       <div class="empty-sub">Apprends à Caddoo ce que ton foyer aime acheter. Plus tu lui en dis, plus il sera précis chaque semaine.</div>
       <button class="btn btn-primary btn-lg" onclick="openAdd()">+ Apprendre à Caddoo</button>
@@ -790,7 +1052,7 @@ function prodRow(p) {
   const isOcc = p.type === 'occasional';
   return `
     <div class="card-row">
-      <div class="prod-emoji">${emoji(p.name)}</div>
+      ${productIcon(p.name, 44)}
       <div class="prod-body">
         <div class="prod-name">${p.qty > 1 ? p.qty + '× ' : ''}${p.name}${p.brand ? ' — ' + p.brand : ''}</div>
         <div class="prod-sub">${isOcc
@@ -812,7 +1074,7 @@ function renderCompare() {
 
   if (items.length === 0) {
     el.innerHTML = `<div class="empty">
-      <div class="empty-icon">🐘</div>
+      <img src="caddoo-reflechit.jpeg" alt="Caddoo" class="empty-mascot">
       <div class="empty-title">Rien à comparer</div>
       <div class="empty-sub">Caddoo comparera les prix Colruyt et Delhaize dès que ta liste de la semaine sera prête.</div>
     </div>`;
@@ -993,8 +1255,9 @@ function renderSettings() {
     </div>
 
     <div style="padding:20px; text-align:center; font-size:.75rem; color:var(--ink4)">
-      🐘 Caddoo Phase 1 · localStorage uniquement<br>
-      Supabase + Pepesto prévus en Phase 2
+      <img src="caddoo-dort.jpeg" alt="Caddoo" style="width:44px;height:44px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 8px;opacity:.6;">
+      Caddoo Phase 1 · localStorage uniquement<br>
+      Supabase + Claude API prévus en Phase 2
     </div>`;
 }
 
@@ -1028,13 +1291,25 @@ function toggleCheck(id) {
 function encore(id) {
   const p = products.find(x => x.id === id);
   if (!p) return;
-  // Repousse selon la fréquence du produit, pas une valeur fixe
-  const days = p.freqDays || 7;
-  const until = Date.now() + days * 86400000;
-  checklist.postponed[id] = until;
+  // Compter les "encore" sur ce produit
+  p.encoreCount = (p.encoreCount || 0) + 1;
+  // Après 3 "encore" → augmenter la fréquence automatiquement
+  if (p.encoreCount >= 3 && p.freqDays < 30) {
+    const nextFreq = p.freqDays === 7 ? 14 : p.freqDays === 14 ? 21 : 30;
+    p.freqDays = nextFreq;
+    p.encoreCount = 0;
+    save('products', products);
+    toast(`🐘 Caddoo a appris : ${p.name} toutes les ${nextFreq === 14 ? '2 sem.' : nextFreq === 21 ? '3 sem.' : '4 sem.'} maintenant`);
+  } else {
+    // Repousse selon la fréquence
+    const days = p.freqDays || 7;
+    const until = Date.now() + days * 86400000;
+    checklist.postponed[id] = until;
+    save('products', products);
+    const label = days === 7 ? '1 semaine' : days === 14 ? '2 semaines' : days === 21 ? '3 semaines' : '1 mois';
+    toast(`🐘 Caddoo s'en souvient — repoussé de ${label} !`);
+  }
   save('checklist', checklist);
-  const label = days === 7 ? '1 semaine' : days === 14 ? '2 semaines' : days === 21 ? '3 semaines' : '1 mois';
-  toast(`🐘 Caddoo s'en souvient — repoussé de ${label} !`);
   renderWeek();
 }
 
@@ -1159,12 +1434,25 @@ function saveProduct() {
 
 function deleteProduct(id) {
   const p = products.find(x => x.id === id);
-  showConfirm(`Supprimer "${p?.name}" ?`, () => {
-    products = products.filter(x => x.id !== id);
-    save('products', products);
-    toast('🐘 Caddoo a oublié ce produit');
-    render();
-  });
+  if (!p) return;
+
+  // Logique d'apprentissage : si supprimé de la liste semaine (pas du catalogue)
+  // on augmente la fréquence plutôt que supprimer
+  if (p.type === 'regular' && p.skipCount >= 2) {
+    showConfirm(`Supprimer "${p?.name}" ?\n\nCaddoo l'a vu supprimer ${p.skipCount} fois. Tu peux aussi juste augmenter sa fréquence.`, () => {
+      products = products.filter(x => x.id !== id);
+      save('products', products);
+      toast('🐘 Caddoo a oublié ce produit');
+      render();
+    });
+  } else {
+    showConfirm(`Supprimer "${p?.name}" ?`, () => {
+      products = products.filter(x => x.id !== id);
+      save('products', products);
+      toast('🐘 Caddoo a oublié ce produit');
+      render();
+    });
+  }
 }
 
 // ─── FREQ EDIT MODAL ──────────────────────────────────────────
