@@ -541,6 +541,14 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 <div class="toast" id="toast"></div>
 
 <script>
+// ─── RESET D'URGENCE (défini en premier) ──────────────────────
+function hardReset() {
+  if (confirm('Réinitialiser Caddoo ? Toutes tes données seront effacées.')) {
+    localStorage.clear();
+    location.reload();
+  }
+}
+
 // ═══════════════════════════════════════════════════════════════
 // DATA STRUCTURES
 // household: { id, name, members: [{id, name}] }
