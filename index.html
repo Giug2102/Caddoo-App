@@ -824,6 +824,9 @@ function skipOnboarding() {
 
 let onboarded = load('onboarded', false);
 
+// ─── ACTIVE TAB ───────────────────────────────────────────────
+let activeTab = 'week';
+
 function switchTab(tab) {
   activeTab = tab;
   ['week','catalog','compare','settings'].forEach(t => {
