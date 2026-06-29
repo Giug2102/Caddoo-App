@@ -879,6 +879,8 @@ function renderWeek() {
       </div>`;
     return;
   }
+
+  if (products.filter(p => p.type === 'regular').length === 0) {
     el.innerHTML = `<div class="empty">
       <img src="caddoo-heureux.jpeg" alt="Caddoo" class="empty-mascot">
       <div class="empty-title">Bonjour, je suis Caddoo !</div>
