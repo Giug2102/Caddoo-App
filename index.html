@@ -1557,19 +1557,15 @@ function confirmReset() {
 }
 
 // ─── MIGRATION / COMPAT CHECK ────────────────────────────────
-// Si les données sont corrompues ou d'une vieille version → reset propre
-(function() {
-  try {
-    const p = load('products', []);
-    const c = load('checklist', {});
-    // Test basique de cohérence
-    if (p.length > 0) JSON.stringify(p);
-    if (c.weekKey) JSON.stringify(c);
-  } catch(e) {
-    localStorage.clear();
-    location.reload();
-  }
-})();
+try {
+  const _p = load('products', []);
+  const _c = load('checklist', {});
+  if (_p.length > 0) JSON.stringify(_p);
+  if (_c && _c.weekKey) JSON.stringify(_c);
+} catch(e) {
+  localStorage.clear();
+  location.reload();
+}
 
 // ─── QTY OVERRIDE ────────────────────────────────────────────
 function changeQty(id, delta) {
