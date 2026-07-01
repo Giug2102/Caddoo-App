@@ -11,9 +11,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles/tokens.css">
-EOF
-echo "Bloc 1 OK"
-cat >> ~/Desktop/Caddoo-App/index.html << 'EOF'
 <style>
   .screen { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:var(--space-6) var(--space-5); }
   .mascot { width:110px; height:auto; margin-bottom:var(--space-5); animation:float 3s ease-in-out infinite; }
@@ -44,9 +41,6 @@ cat >> ~/Desktop/Caddoo-App/index.html << 'EOF'
 </style>
 </head>
 <body>
-EOF
-echo "Bloc 2 OK"
-cat >> ~/Desktop/Caddoo-App/index.html << 'EOF'
   <main class="screen" id="screen-welcome">
     <img src="assets/caddoo/caddoo-heureux.jpeg" alt="Caddoo" class="mascot">
     <h1 class="screen-title">Salut, moi c'est <span style="color:var(--green-600)">Caddoo</span> !</h1>
@@ -157,9 +151,6 @@ cat >> ~/Desktop/Caddoo-App/index.html << 'EOF'
     <p class="screen-subtitle" id="success-msg">Ton foyer est prêt.</p>
     <button class="btn-primary" style="max-width:320px" onclick="alert('Prochaine étape : génération de liste !')">Générer ma première liste</button>
   </main>
-EOF
-echo "Bloc 3 OK"
-cat >> ~/Desktop/Caddoo-App/index.html << 'EOF'
   <script type="module">
     import { supabase } from './src/lib/supabaseClient.js';
 
@@ -311,8 +302,6 @@ cat >> ~/Desktop/Caddoo-App/index.html << 'EOF'
   </script>
 </body>
 </html>
-EOF
-echo "Bloc 4 OK"
 cd ~/Desktop/Caddoo-App
 git add .
 git commit -m "ajout écran connexion + session auto"
