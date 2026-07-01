@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#22c55e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Caddoo">
+<title>Caddoo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/tokens.css">
+<style>
+  .screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-6) var(--space-5);
+  }
+  .mascot {
+    width: 110px;
+    height: auto;
+    margin-bottom: var(--space-5);
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-6px); }
+  }
+  .screen-title {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    text-align: center;
+    margin-bottom: var(--space-2);
+  }
+  .screen-subtitle {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: var(--space-6);
+    line-height: 1.5;
+    max-width: 320px;
+  }
+  .card {
+    width: 100%;
+    max-width: 360px;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-5);
+  }
+  .tabs {
+    display: flex;
+    background: var(--gray-100);
+    border-radius: var(--radius-sm);
+    padding: 3px;
+    margin-bottom: var(--space-5);
+  }
+  .tab-btn {
+    flex: 1;
+    padding: var(--space-2) var(--space-3);
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    font-family: var(--font-family);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+  .tab-btn.active {
+    background: var(--white);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+    font-weight: var(--font-semibold);
+  }
+  .field {
+    margin-bottom: var(--space-4);
+  }
+  .field label {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+  .field input {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    border: 1.5px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    font-family: var(--font-family);
+    font-size: var(--text-base);
+    color: var(--text-primary);
+    background: var(--white);
+    outline: none;
+    transition: border-color var(--transition-fast);
+  }
+  .field input:focus {
+    border-color: var(--green-500);
+  }
+  .field input::placeholder {
+    color: var(--gray-300);
+  }
+  .btn-primary {
+    width: 100%;
+    padding: var(--space-4);
+    background: var(--green-500);
+    color: var(--text-on-green);
+    border: none;
+    border-radius: var(--radius-full);
+    font-family: var(--font-family);
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    margin-top: var(--space-2);
+  }
+  .btn-primary:active {
+    transform: scale(0.97);
+    box-shadow: var(--shadow-sm);
+  }
+  .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .error-msg {
+    display: none;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: var(--danger);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-sm);
+    margin-top: var(--space-4);
+    text-align: center;
+  }
+  .error-msg.visible {
+    display: block;
+  }
+  .back-link {
+    margin-top: var(--space-5);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .back-link:hover {
+    color: var(--text-primary);
+  }
+  .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: var(--space-2);
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  .chat-bubble-caddoo {
+    background: var(--green-50);
+    border: 1px solid var(--green-100);
+    color: var(--text-primary);
+    border-radius: 0 var(--radius-md) var(--radius-md) var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    max-width: 90%;
+    align-self: flex-start;
+  }
+  .chat-bubble-user {
+    background: var(--green-500);
+    color: white;
+    border-radius: var(--radius-md) var(--radius-md) 0 var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    max-width: 90%;
+    align-self: flex-end;
+  }
+</style>
+</head>
+<body>
+
+  <!-- ÉCRAN 1 — BIENVENUE -->
+  <main class="screen" id="screen-welcome">
+    <img src="assets/caddoo/caddoo-heureux.jpeg" alt="Caddoo" class="mascot">
+    <h1 class="screen-title">Salut, moi c'est <span style="color:var(--green-600)">Caddoo</span> !</h1>
+    <p class="screen-subtitle">Je retiens tes habitudes de courses pour te préparer une liste prête à l'emploi, chaque semaine.</p>
+    <button class="btn-primary" style="max-width:320px" onclick="showScreen('screen-auth')">C'est parti</button>
+  </main>
+
+  <!-- ÉCRAN 2 — AUTHENTIFICATION -->
+  <main class="screen" id="screen-auth" style="display:none">
+    <img src="assets/caddoo/caddoo-normal.jpeg" alt="Caddoo" class="mascot">
+    <h1 class="screen-title">Crée ton compte</h1>
+    <p class="screen-subtitle">Pour commencer, j'ai besoin de ton email et d'un mot de passe.</p>
+    <div class="card">
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="ton@email.com" autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" placeholder="8 caractères minimum" autocomplete="new-password">
+      </div>
+      <button class="btn-primary" id="btn-signup" onclick="handleSignup()">Continuer</button>
+      <div class="error-msg" id="auth-error"></div>
+    </div>
+    <span class="back-link" onclick="showScreen('screen-welcome')">← Retour</span>
+  </main>
+
+  <!-- ÉCRAN 3 — FOYER -->
+  <main class="screen" id="screen-household" style="display:none">
+    <img src="assets/caddoo/caddoo-clinoeil.jpeg" alt="Caddoo" class="mascot">
+    <h1 class="screen-title">Ton foyer</h1>
+    <p class="screen-subtitle">Crée un nouveau foyer ou rejoins celui d'un proche avec son code d'invitation.</p>
+    <div class="card">
+      <div class="tabs">
+        <button class="tab-btn active" id="tab-create" onclick="switchTab('create')">Créer un foyer</button>
+        <button class="tab-btn" id="tab-join" onclick="switchTab('join')">Rejoindre</button>
+      </div>
+      <div id="panel-create">
+        <div class="field">
+          <label for="household-name">Nom du foyer</label>
+          <input type="text" id="household-name" placeholder="Ex : Chez nous, La famille Martin…" maxlength="40">
+        </div>
+        <button class="btn-primary" id="btn-create" onclick="handleCreate()">Créer mon foyer</button>
+      </div>
+      <div id="panel-join" style="display:none">
+        <div class="field">
+          <label for="invite-code">Code d'invitation</label>
+          <input type="text" id="invite-code" placeholder="Ex : AB3X7K" maxlength="6" style="text-transform:uppercase;letter-spacing:0.15em;font-weight:600">
+        </div>
+        <button class="btn-primary" id="btn-join" onclick="handleJoin()">Rejoindre le foyer</button>
+      </div>
+      <div class="error-msg" id="household-error"></div>
+    </div>
+    <span class="back-link" onclick="showScreen('screen-auth')">← Retour</span>
+  </main>
+
+  <!-- ÉCRAN 4 — PRODUITS -->
+  <main class="screen" id="screen-products" style="display:none">
+    <img src="assets/caddoo/caddoo-normal.jpeg" alt="Caddoo" class="mascot">
+    <h1 class="screen-title">Tes produits habituels</h1>
+    <p class="screen-subtitle">Dis-moi ce que tu achètes régulièrement. Je m'en souviendrai pour toi !</p>
+
+    <div id="products-list" style="width:100%;max-width:360px;margin-bottom:var(--space-4)"></div>
+
+    <div class="card" style="max-width:360px">
+      <div class="tabs">
+        <button class="tab-btn active" id="tab-manual" onclick="switchProductTab('manual')">✏️ Manuel</button>
+        <button class="tab-btn" id="tab-chat" onclick="switchProductTab('chat')">💬 Chat</button>
+      </div>
+
+      <div id="panel-manual">
+        <div class="field">
+          <label for="p-name">Nom du produit *</label>
+          <input type="text" id="p-name" placeholder="Ex : Lait demi-écrémé">
+        </div>
+        <div style="display:flex;gap:var(--space-3)">
+          <div class="field" style="flex:1">
+            <label for="p-brand">Marque</label>
+            <input type="text" id="p-brand" placeholder="Ex : Candia">
+          </div>
+          <div class="field" style="flex:1">
+            <label for="p-size">Taille</label>
+            <input type="text" id="p-size" placeholder="Ex : 1L">
+          </div>
+        </div>
+        <div class="field">
+          <label>Type</label>
+          <div style="display:flex;gap:var(--space-3);margin-top:var(--space-2)">
+            <label style="display:flex;align-items:center;gap:var(--space-2);cursor:pointer;font-size:var(--text-sm);font-weight:var(--font-medium)">
+              <input type="radio" name="p-type" value="regular" checked onchange="toggleFrequency()"> Régulier
+            </label>
+            <label style="display:flex;align-items:center;gap:var(--space-2);cursor:pointer;font-size:var(--text-sm);font-weight:var(--font-medium)">
+              <input type="radio" name="p-type" value="occasional" onchange="toggleFrequency()"> Occasionnel
+            </label>
+          </div>
+        </div>
+        <div class="field" id="frequency-field">
+          <label for="p-frequency">Fréquence d'achat</label>
+          <select id="p-frequency" style="width:100%;padding:var(--space-3) var(--space-4);border:1.5px solid var(--gray-300);border-radius:var(--radius-md);font-family:var(--font-family);font-size:var(--text-base);color:var(--text-primary);background:var(--white);outline:none">
+            <option value="3">Tous les 3 jours</option>
+            <option value="7" selected>Toutes les semaines</option>
+            <option value="14">Toutes les 2 semaines</option>
+            <option value="30">Tous les mois</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="p-notes">Notes (optionnel)</label>
+          <input type="text" id="p-notes" placeholder="Ex : Rayon bio de préférence">
+        </div>
+        <button class="btn-primary" id="btn-add-product" onclick="handleAddProduct()">
+          Ajouter ce produit
+        </button>
+        <div class="error-msg" id="product-error"></div>
+      </div>
+
+      <div id="panel-chat" style="display:none">
+        <div id="chat-messages" style="min-height:120px;max-height:200px;overflow-y:auto;margin-bottom:var(--space-4);display:flex;flex-direction:column;gap:var(--space-3)">
+          <div class="chat-bubble-caddoo">
+            Dis-moi ce que tu veux ajouter ! Par exemple : <em>"du lait Candia toutes les semaines"</em> ou <em>"chips apéro Lay's"</em>.
+          </div>
+        </div>
+        <div style="display:flex;gap:var(--space-2)">
+          <input type="text" id="chat-input" placeholder="Écris un produit..." style="flex:1;padding:var(--space-3) var(--space-4);border:1.5px solid var(--gray-300);border-radius:var(--radius-md);font-family:var(--font-family);font-size:var(--text-sm);outline:none" onkeydown="if(event.key==='Enter') handleChatSend()">
+          <button onclick="handleChatSend()" style="padding:var(--space-3) var(--space-4);background:var(--green-500);color:white;border:none;border-radius:var(--radius-md);font-family:var(--font-family);font-size:var(--text-sm);font-weight:var(--font-semibold);cursor:pointer">Envoyer</button>
+        </div>
+        <div class="error-msg" id="chat-error"></div>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="btn-continue-products" style="max-width:360px;margin-top:var(--space-5);display:none" onclick="goToSuccess()">
+      Continuer →
+    </button>
+    <span class="back-link" onclick="showScreen('screen-household')">← Retour</span>
+  </main>
+
+  <!-- ÉCRAN 5 — SUCCÈS -->
+  <main class="screen" id="screen-success" style="display:none">
+    <img src="assets/caddoo/caddoo-celebre.jpeg" alt="Caddoo célèbre" class="mascot" style="width:160px">
+    <h1 class="screen-title">C'est parti !</h1>
+    <p class="screen-subtitle" id="success-msg">Ton foyer est prêt.</p>
+    <button class="btn-primary" style="max-width:320px" onclick="alert('Prochaine étape : génération de liste !')">
+      Générer ma première liste
+    </button>
+  </main>
+
+  <script type="module">
+    import { supabase } from './src/lib/supabaseClient.js';
+
+    // ── Navigation ───────────────────────────────────────
+    window.showScreen = (id) => {
+      document.querySelectorAll('main.screen').forEach(s => s.style.display = 'none');
+      document.getElementById(id).style.display = 'flex';
+    };
+
+    // ── Tabs foyer ───────────────────────────────────────
+    window.switchTab = (tab) => {
+      const isCreate = tab === 'create';
+      document.getElementById('tab-create').classList.toggle('active', isCreate);
+      document.getElementById('tab-join').classList.toggle('active', !isCreate);
+      document.getElementById('panel-create').style.display = isCreate ? 'block' : 'none';
+      document.getElementById('panel-join').style.display = isCreate ? 'none' : 'block';
+    };
+
+    // ── Erreurs ──────────────────────────────────────────
+    const showError = (id, msg) => {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.classList.add('visible');
+    };
+    const clearError = (id) => {
+      document.getElementById(id).classList.remove('visible');
+    };
+
+    // ── Spinner ──────────────────────────────────────────
+    const setLoading = (btnId, loading, label) => {
+      const btn = document.getElementById(btnId);
+      btn.disabled = loading;
+      btn.innerHTML = loading ? '<span class="spinner"></span> Chargement…' : label;
+    };
+    window.setLoading = setLoading;
+
+    // ── Inscription ──────────────────────────────────────
+    window.handleSignup = async () => {
+      clearError('auth-error');
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      if (!email || !password) { showError('auth-error', 'Merci de remplir tous les champs.'); return; }
+      if (password.length < 8) { showError('auth-error', 'Le mot de passe doit faire au moins 8 caractères.'); return; }
+      setLoading('btn-signup', true, 'Continuer');
+      const { error } = await supabase.auth.signUp({ email, password });
+      setLoading('btn-signup', false, 'Continuer');
+      if (error) { showError('auth-error', error.message); return; }
+      showScreen('screen-household');
+    };
+
+    // ── Créer un foyer ───────────────────────────────────
+    window.handleCreate = async () => {
+      clearError('household-error');
+      const name = document.getElementById('household-name').value.trim() || 'Mon foyer';
+      setLoading('btn-create', true, 'Créer mon foyer');
+      const { data, error } = await supabase.rpc('create_household', { p_name: name });
+      setLoading('btn-create', false, 'Créer mon foyer');
+      if (error) { showError('household-error', error.message); return; }
+      document.getElementById('success-msg').textContent =
+        'Foyer "' + data.name + '" créé ! Code d\'invitation : ' + data.invite_code;
+      showScreen('screen-products');
+    };
+
+    // ── Rejoindre un foyer ───────────────────────────────
+    window.handleJoin = async () => {
+      clearError('household-error');
+      const code = document.getElementById('invite-code').value.trim().toUpperCase();
+      if (code.length !== 6) { showError('household-error', 'Le code doit faire 6 caractères.'); return; }
+      setLoading('btn-join', true, 'Rejoindre le foyer');
+      const { data, error } = await supabase.rpc('join_household', { p_code: code });
+      setLoading('btn-join', false, 'Rejoindre le foyer');
+      if (error) { showError('household-error', error.message); return; }
+      document.getElementById('success-msg').textContent =
+        'Tu as rejoint le foyer "' + data.name + '" avec succès !';
+      showScreen('screen-products');
+    };
+
+    // ── Tabs produits ────────────────────────────────────
+    window.switchProductTab = (tab) => {
+      const isManual = tab === 'manual';
+      document.getElementById('tab-manual').classList.toggle('active', isManual);
+      document.getElementById('tab-chat').classList.toggle('active', !isManual);
+      document.getElementById('panel-manual').style.display = isManual ? 'block' : 'none';
+      document.getElementById('panel-chat').style.display = isManual ? 'none' : 'block';
+    };
+
+    window.toggleFrequency = () => {
+      const isRegular = document.querySelector('input[name="p-type"]:checked').value === 'regular';
+      document.getElementById('frequency-field').style.display = isRegular ? 'block' : 'none';
+    };
+
+    let addedProducts = [];
+
+    const renderProductsList = () => {
+      const list = document.getElementById('products-list');
+      const btn = document.getElementById('btn-continue-products');
+      if (addedProducts.length === 0) { list.innerHTML = ''; btn.style.display = 'none'; return; }
+      btn.style.display = 'block';
+      list.innerHTML = addedProducts.map((p, i) => `
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface);border-radius:var(--radius-md);padding:var(--space-3) var(--space-4);margin-bottom:var(--space-2);box-shadow:var(--shadow-sm)">
+          <div>
+            <div style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--text-primary)">${p.name}${p.brand ? ' · ' + p.brand : ''}${p.size ? ' · ' + p.size : ''}</div>
+            <div style="font-size:var(--text-xs);color:var(--text-secondary)">${p.type === 'regular' ? 'Régulier · tous les ' + p.frequency_days + ' j.' : 'Occasionnel'}</div>
+          </div>
+          <button onclick="removeProduct(${i})" style="background:none;border:none;color:var(--gray-300);font-size:1.2rem;cursor:pointer;padding:0 var(--space-2)">×</button>
+        </div>
+      `).join('');
+    };
+
+    window.removeProduct = (i) => { addedProducts.splice(i, 1); renderProductsList(); };
+
+    window.handleAddProduct = async () => {
+      const errorEl = document.getElementById('product-error');
+      errorEl.classList.remove('visible');
+      const name = document.getElementById('p-name').value.trim();
+      if (!name) { errorEl.textContent = 'Le nom du produit est obligatoire.'; errorEl.classList.add('visible'); return; }
+      const type = document.querySelector('input[name="p-type"]:checked').value;
+      const product = {
+        name,
+        brand: document.getElementById('p-brand').value.trim() || null,
+        size: document.getElementById('p-size').value.trim() || null,
+        type,
+        frequency_days: type === 'regular' ? parseInt(document.getElementById('p-frequency').value) : null,
+        current_frequency_days: type === 'regular' ? parseInt(document.getElementById('p-frequency').value) : null,
+        notes: document.getElementById('p-notes').value.trim() || null,
+      };
+      setLoading('btn-add-product', true, 'Ajouter ce produit');
+      const { data: userData } = await supabase.auth.getUser();
+      const { data: userRow } = await supabase.from('users').select('household_id').eq('id', userData.user.id).single();
+      const { error } = await supabase.from('products').insert({ ...product, household_id: userRow.household_id, created_by: userData.user.id });
+      setLoading('btn-add-product', false, 'Ajouter ce produit');
+      if (error) { errorEl.textContent = error.message; errorEl.classList.add('visible'); return; }
+      addedProducts.push(product);
+      renderProductsList();
+      document.getElementById('p-name').value = '';
+      document.getElementById('p-brand').value = '';
+      document.getElementById('p-size').value = '';
+      document.getElementById('p-notes').value = '';
+      document.querySelector('input[name="p-type"][value="regular"]').checked = true;
+      document.getElementById('frequency-field').style.display = 'block';
+      document.getElementById('p-frequency').value = '7';
+      document.getElementById('p-name').focus();
+    };
+
+    window.handleChatSend = async () => {
+      const input = document.getElementById('chat-input');
+      const msg = input.value.trim();
+      if (!msg) return;
+      const messages = document.getElementById('chat-messages');
+      messages.innerHTML += `<div class="chat-bubble-user">${msg}</div>`;
+      input.value = '';
+      messages.innerHTML += `<div class="chat-bubble-caddoo">⏳ Je réfléchis...</div>`;
+      messages.scrollTop = messages.scrollHeight;
+      setTimeout(() => {
+        const bubbles = messages.querySelectorAll('.chat-bubble-caddoo');
+        bubbles[bubbles.length - 1].textContent = "Le chat sera disponible très bientôt ! En attendant, utilise le formulaire manuel 😊";
+        messages.scrollTop = messages.scrollHeight;
+      }, 1000);
+    };
+
+    window.goToSuccess = () => {
+      document.getElementById('success-msg').textContent =
+        addedProducts.length + ' produit(s) ajouté(s) ! Caddoo apprend déjà tes habitudes.';
+      showScreen('screen-success');
+    };
+
+  </script>
+</body>
+</html>
