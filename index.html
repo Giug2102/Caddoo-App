@@ -238,13 +238,10 @@
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
       try {
-        const { data: userRow } = await supabase
-          .from('users')
-          .select('household_id')
-          .eq('id', session.user.id)
-          .single();
-        if (userRow?.household_id) {
-          await supabase.auth.refreshSession(); showScreen('screen-products'); currentHouseholdId = data.id;
+        const { data: hid1 } = await supabase.rpc('get_my_household_id');
+        if (hid1) {
+          currentHouseholdId = hid1;
+          showScreen('screen-products');
         } else {
           showScreen('screen-household');
         }
@@ -310,13 +307,10 @@
       setLoading('btn-login', false, 'Se connecter');
       if (error) { showError('login-error', error.message); return; }
       try {
-        const { data: userRow } = await supabase
-          .from('users')
-          .select('household_id')
-          .eq('id', data.user.id)
-          .single();
-        if (userRow?.household_id) {
-          await supabase.auth.refreshSession(); showScreen('screen-products'); currentHouseholdId = data.id;
+        const { data: hid2 } = await supabase.rpc('get_my_household_id');
+        if (hid2) {
+          currentHouseholdId = hid2;
+          showScreen('screen-products');
         } else {
           showScreen('screen-household');
         }
