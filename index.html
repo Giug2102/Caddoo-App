@@ -412,13 +412,9 @@
 
         let householdId = currentHouseholdId;
         if (!householdId) {
-          const { data: userRow, error: rowError } = await supabase
-            .from('users')
-            .select('household_id')
-            .eq('id', user.id)
-            .single();
-          if (rowError || !userRow?.household_id) throw new Error('Aucun foyer associé à ce compte.');
-          householdId = userRow.household_id;
+          const { data: hid, error: hidError } = await supabase.rpc('get_my_household_id');
+          if (hidError || !hid) throw new Error('Aucun foyer associé à ce compte.');
+          householdId = hid;
         }
 
         const { error: insertError } = await supabase.from('products').insert({
