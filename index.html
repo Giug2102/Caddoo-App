@@ -94,7 +94,7 @@
         <input type="password" id="login-password" placeholder="Ton mot de passe" autocomplete="current-password">
       </div>
       <button class="btn-primary" id="btn-login" onclick="handleLogin()">Se connecter</button>
-      <button class="btn-secondary" onclick="showScreen('screen-auth')">Créer un compte</button>
+      <button class="btn-secondary" onclick="showScreen('screen-auth')">Créer un compte</button><p style="text-align:center;margin-top:12px"><span onclick="handleForgotPassword()" style="font-size:0.875rem;color:#6b7280;cursor:pointer;text-decoration:underline">Mot de passe oublié ?</span></p>
       <div class="error-msg" id="login-error"></div>
     </div>
     <span class="back-link" onclick="showScreen('screen-welcome')">← Retour</span>
@@ -288,6 +288,15 @@
       setLoading('btn-signup', false, 'Créer mon compte');
       if (error) { showError('auth-error', error.message); return; }
       showScreen('screen-household');
+    };
+
+    // ── Mot de passe oublié
+    window.handleForgotPassword = async () => {
+      const email = document.getElementById("login-email").value.trim();
+      if (!email) { showError("login-error", "Entre ton email puis clique sur Mot de passe oublié."); return; }
+      const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: "https://caddoo-app.vercel.app" });
+      if (error) { showError("login-error", traduireErreur(error.message)); return; }
+      const el = document.getElementById("login-error"); el.style.background="#f0faf2"; el.style.borderColor="#86d99a"; el.style.color="#15803d"; el.textContent="Email envoyé ! Vérifie ta boîte mail."; el.classList.add("visible");
     };
 
     // ── Connexion ────────────────────────────────────────
