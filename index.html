@@ -244,7 +244,7 @@
           .eq('id', session.user.id)
           .single();
         if (userRow?.household_id) {
-          await supabase.auth.refreshSession(); showScreen('screen-products');
+          await supabase.auth.refreshSession(); showScreen('screen-products'); currentHouseholdId = data.id;
         } else {
           showScreen('screen-household');
         }
@@ -316,7 +316,7 @@
           .eq('id', data.user.id)
           .single();
         if (userRow?.household_id) {
-          await supabase.auth.refreshSession(); showScreen('screen-products');
+          await supabase.auth.refreshSession(); showScreen('screen-products'); currentHouseholdId = data.id;
         } else {
           showScreen('screen-household');
         }
@@ -334,7 +334,7 @@
       setLoading('btn-create', false, 'Créer mon foyer');
       if (error) { showError('household-error', error.message); return; }
       document.getElementById('success-msg').textContent = 'Foyer "' + data.name + '" créé ! Code d\'invitation : ' + data.invite_code;
-      await supabase.auth.refreshSession(); showScreen('screen-products');
+      await supabase.auth.refreshSession(); showScreen('screen-products'); currentHouseholdId = data.id;
     };
 
     // ── Rejoindre un foyer ───────────────────────────────
@@ -347,7 +347,7 @@
       setLoading('btn-join', false, 'Rejoindre le foyer');
       if (error) { showError('household-error', error.message); return; }
       document.getElementById('success-msg').textContent = 'Tu as rejoint le foyer "' + data.name + '" !';
-      await supabase.auth.refreshSession(); showScreen('screen-products');
+      await supabase.auth.refreshSession(); showScreen('screen-products'); currentHouseholdId = data.id;
     };
 
     // ── Tabs produits ────────────────────────────────────
@@ -365,6 +365,7 @@
     };
 
     let addedProducts = [];
+    let currentHouseholdId = null;
 
     const renderProductsList = () => {
       const list = document.getElementById('products-list');
@@ -409,17 +410,20 @@
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         if (userError || !user) throw new Error('Non connecté.');
 
-        const { data: userRow, error: rowError } = await supabase
-          .from('users')
-          .select('household_id')
-          .eq('id', user.id)
-          .single();
-
-        if (rowError || !userRow?.household_id) throw new Error('Aucun foyer associé à ce compte.');
+        let householdId = currentHouseholdId;
+        if (!householdId) {
+          const { data: userRow, error: rowError } = await supabase
+            .from('users')
+            .select('household_id')
+            .eq('id', user.id)
+            .single();
+          if (rowError || !userRow?.household_id) throw new Error('Aucun foyer associé à ce compte.');
+          householdId = userRow.household_id;
+        }
 
         const { error: insertError } = await supabase.from('products').insert({
           ...product,
-          household_id: userRow.household_id,
+          household_id: householdId,
           created_by: user.id,
         });
 
