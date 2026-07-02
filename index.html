@@ -244,7 +244,7 @@
           .eq('id', session.user.id)
           .single();
         if (userRow?.household_id) {
-          showScreen('screen-products');
+          await supabase.auth.refreshSession(); showScreen('screen-products');
         } else {
           showScreen('screen-household');
         }
@@ -316,7 +316,7 @@
           .eq('id', data.user.id)
           .single();
         if (userRow?.household_id) {
-          showScreen('screen-products');
+          await supabase.auth.refreshSession(); showScreen('screen-products');
         } else {
           showScreen('screen-household');
         }
@@ -334,7 +334,7 @@
       setLoading('btn-create', false, 'Créer mon foyer');
       if (error) { showError('household-error', error.message); return; }
       document.getElementById('success-msg').textContent = 'Foyer "' + data.name + '" créé ! Code d\'invitation : ' + data.invite_code;
-      showScreen('screen-products');
+      await supabase.auth.refreshSession(); showScreen('screen-products');
     };
 
     // ── Rejoindre un foyer ───────────────────────────────
@@ -347,7 +347,7 @@
       setLoading('btn-join', false, 'Rejoindre le foyer');
       if (error) { showError('household-error', error.message); return; }
       document.getElementById('success-msg').textContent = 'Tu as rejoint le foyer "' + data.name + '" !';
-      showScreen('screen-products');
+      await supabase.auth.refreshSession(); showScreen('screen-products');
     };
 
     // ── Tabs produits ────────────────────────────────────
